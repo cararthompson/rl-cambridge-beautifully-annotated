@@ -1,0 +1,46 @@
+# Bio 
+Cara is a freelance data consultant with an academic background, specialising in dataviz and in "enhanced" reproducible outputs. She lives in Edinburgh, Scotland, and is passionate about maximising the impact of other people's expertise.
+
+# Title ----
+Beautifully annotated: enhancing your ggplots with text
+
+# Abstract ----
+Applying design principles to the text in our graphs, and making text an integral part of the visualisation, can make all the difference between a busy plot and a plot which communicates a clear story.
+In this session, we will explore:
+- how to be less dependent on annotations (I know... trust me!)
+- how to use colors and fonts to draw attention to key elements in annotations
+- how to format text on the fly to change fonts, colors, alignments and text sizes using `{ggtext}`
+- how to add arrows to your plots to highlight key data points or important patterns
+- a few useful packages and ggplot tricks when it comes to annotations
+Attendees are welcome to bring along one of their own plots to discuss during the Q&A session for some live feedback. 
+
+
+
+Talk plan
+
+# Intro
+
+## Penguin demo using colours to help
+
+## Text hierarchy 
+
+## Why do this in R rather than use something like Figma? 
+
+# Let's get coding
+
+## Basic bar plot, adding colours to highlight vit c vs orange
+
+## Text hierarchy through theme
+
+Not the focus of this talk, so going to do a "here's one I built earlier", but if you want to find out more about that, this is the theme I built in an 8 minute talk for the NHS-R conference last year. 
+
+## Bar plot to demo alignment and colour of labels
+- Remove clutter, extreme version go theme_void() and it still works; tailer to your audience!
+- Watch out for transparency / colours affecting accessibility (point to websites to check this)
+
+## Scatter plot to show more of the same + arrows 
+
+### Add geomtextpath
+
+### Add gghighlight
+

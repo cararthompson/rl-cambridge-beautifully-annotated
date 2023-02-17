@@ -1,0 +1,768 @@
+---
+title: "Beautifully annotated: enhancing your ggplots with text"
+subtitle: "RUG @ HDSI | `r verbaliseR::prettify_date('2023-02-23', uk_or_us = 'UK')`"
+from: markdown+emoji
+format:
+  revealjs: 
+    transition: none
+    slide-number: false
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    logo: images/light-logo.png
+    theme: cararquarto.scss
+    footer: |
+        Slides and recording: [cararthompson.com/talks/beautifully-annotated](https://cararthompson.com/talks/beautifully-annotated)
+filters:
+ - code-visibility
+ - lightbox
+lightbox: auto
+auto-animate: true
+title-slide-attributes:
+    data-background-image: "images/dark-background.png"
+    data-background-size: stretch
+    data-background-opacity: "1"
+    data-background-color: black
+---
+
+# Intro {visibility=hidden}
+
+## Hi there :wave: ! {transition="convex-in none-out"}
+
+
+```{r setup}
+
+knitr::opts_chunk$set(dev = "ragg_png")
+
+```
+
+
+👩 Cara Thompson
+
+👩‍💻 Psychology PhD `|>` 
+Analysis of postgraduate medical examinations `|>` 
+Freelance data consultant specialising in dataviz and "enhanced" reproducible outputs
+
+::: fragment
+💙 Helping others maximise the impact of their expertise
+:::
+<br>
+
+::: footer
+Find out more: [cararthompson.com/about](https://cararthompson.com/about)
+:::
+
+## Today's goal {transition="none"}
+
+**To equip you with some design tips and coding tricks to make the most of text in your plots.**
+
+::: {.incremental}
+- Explore how to be less dependent on annotations (I know... trust me!)
+- Illustrate ways in which we can use colour and fonts to add text hierarchy and story-enhancing annotations
+- Provide you with reusable code to implement these tips, introducing `{ggtext}`, `{geomtextpath}`
+- Point to additional resources you can explore in your own time (links below slides) 
+- Give feedback on your own plots
+:::
+
+
+# But first, please suspend all disbelief...
+
+--- 
+
+![](images/penguin-bakeoff.png)
+
+## The Great Penguin Bake Off
+
+The penguins had a baking competition to see which species could make the best banana loaf. Each species was given bananas of a different level of ripeness.
+
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+
+ggplot(penguins,
+       aes(x = species, 
+           fill = species,
+           y = bill_length_mm)) +
+  geom_bar(show.legend = FALSE, 
+           stat = "summary", 
+           fun = "mean") +
+  labs(title = "The taller the bar, the yummier the cake!") +
+  theme_minimal(base_size = 16) +
+  theme(axis.title = element_blank(),
+        panel.grid = element_blank())
+```
+
+## The Great Penguin Bake Off
+
+The penguins had a baking competition to see which species could make the best banana loaf. Each species was given bananas of a different level of ripeness.
+
+```{r}
+banana_type_palette <- list("Adelie" = "#89973d",
+                            "Chinstrap" = "#e8b92f",
+                            "Gentoo" = "#a45e41")
+
+ggplot(penguins,
+       aes(x = species, 
+           fill = species,
+           y = bill_length_mm)) +
+  geom_bar(show.legend = FALSE, 
+           stat = "summary", 
+           fun = "mean") +
+  scale_fill_manual(values = banana_type_palette) +
+  labs(title = "The taller the bar, the yummier the cake!") +
+  theme_minimal(base_size = 16) +
+  theme(axis.title = element_blank(),
+        panel.grid = element_blank())
+```
+
+
+## The Great Penguin Bake Off
+
+The Adelie penguins decided to experiment with different quantities of banana in their mix. Each island chose a different quantity.
+
+```{r}
+penguins <- penguins %>%
+  mutate(banana_quantity = case_when(species == "Adelie" & island == "Biscoe" ~ 1,
+                                     species == "Adelie" & island == "Dream" ~ 0.6,
+                                     species == "Adelie" & island == "Torgersen" ~ 0,
+                                     TRUE ~ 1))
+
+ggplot(filter(penguins, species == "Adelie"),
+       aes(x = island, 
+           fill = island,
+           y = bill_length_mm)) +
+  geom_bar(show.legend = FALSE, 
+           stat = "summary", 
+           fun = "mean",
+           size = 1) +
+  scale_alpha(range = c(0.1, 0.9)) +
+  labs(title = "The taller the bar, the yummier the cake!") +
+  theme_minimal(base_size = 16) +
+  theme(axis.title = element_blank(),
+        panel.grid = element_blank())
+```
+
+
+## The Great Penguin Bake Off
+
+The Adelie penguins decided to experiment with different quantities of banana in their mix. Each island chose a different quantity.
+
+```{r}
+ggplot(filter(penguins, species == "Adelie"),
+       aes(x = island, 
+           fill = species,
+           alpha = banana_quantity,
+           y = bill_length_mm)) +
+  geom_bar(show.legend = FALSE, 
+           stat = "summary", 
+           fun = "mean",
+           size = 1.5,
+           colour = banana_type_palette$Adelie) +
+  scale_fill_manual(values = banana_type_palette) +
+  scale_alpha(range = c(0.2, 1)) +
+  labs(title = "The taller the bar, the yummier the cake!") +
+  theme_minimal(base_size = 16) +
+  theme(axis.title = element_blank(),
+        panel.grid = element_blank())
+```
+
+## The Great Penguin Bake Off
+
+The penguins also baked their cakes for different amounts of time. Here are the mean durations per species. Which species left their cakes in the oven for longest?
+
+```{r}
+duration_plot <- ggplot(penguins,
+                        aes(x = species, 
+                            fill = species,
+                            y = bill_depth_mm)) +
+  geom_bar(show.legend = FALSE, 
+           stat = "summary", 
+           fun = "mean") +
+  scale_fill_manual(values = banana_type_palette) +
+  theme_minimal(base_size = 16) +
+  labs(x = "",
+       y = "Time in the oven") +
+  theme(panel.grid = element_blank())
+
+duration_plot
+```
+
+
+## The Great Penguin Bake Off
+
+The penguins also baked their cakes for different amounts of time. Here are the mean durations per species. Which species left their cakes in the oven for longest?
+
+```{r}
+duration_plot +
+  coord_flip()
+```
+
+
+--- 
+
+![](images/penguin-bakeoff.png)
+
+## Five tips for beautiful annotations {auto-animate=true}
+
+### <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Colour, basic plots up and running
+
+### <span style=color:#28A569>#2</span> - Add text hierarchy {.faded}
+
+Theme
+Adding colours into title text
+
+### <span style=color:#28A569>#3</span> - Reduce unnecessary eye movement {.faded}
+
+Building on markdown above, 
+Adding text boxes in helpful places
+Geom textpath 
+Can then remove a lot of plot clutter
+
+### <span style=color:#28A569>#4</span> - Highlight important patterns {.faded}
+
+Creating label content
+adding text boxes (building on alignment discussed above) 
+and arrows
+
+### <span style=color:#28A569>#5</span> - See how much you can declutter {.faded}
+
+Fade grid lines
+Consider theme_void
+
+### Bonus track - `{gghighlight}`, `{geomtextpath}` & curved arrows
+
+gghighlight
+https://twitter.com/nrennie35/status/1625471525448032260
+
+
+# Let's get coding! {background=#2C3D4F}
+
+# #1 - colour {visibility=hidden}
+
+## Setting up our first plot
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+
+Using the ToothGrowth dataset
+
+- Build into R for easy "codealongability"
+- Namespacing (`package::function()`) :eyes:
+- Intriguing dataset (`?ToothGrowth`)
+- Research question with a pattern to visualise and annotate
+
+:::
+
+::: {.column width=50%}
+
+![](https://media.tenor.com/S5gVmtZuDGQAAAAC/guinea-pigs-cute.gif)
+
+(Feel free to munch along!)
+
+:::
+
+::::
+
+## Setting up our first plot 
+
+With a few tips along the way
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  group_by(supp, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  ggplot(aes(x = dose,
+             y = mean_length,
+             fill = supp)) +
+  geom_bar(stat = "identity")
+
+```
+
+
+## Setting up our first plot 
+
+With a few tips along the way
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  group_by(supp, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  ggplot(aes(x = dose,
+             y = mean_length,
+             fill = supp)) +
+  geom_bar(stat = "identity",
+           position = "dodge")
+
+```
+
+
+## Setting up our first plot 
+
+With a few tips along the way
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  group_by(supp, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  ggplot(aes(x = dose,
+             y = mean_length,
+             fill = supp)) +
+  geom_bar(stat = "identity",
+           position = "dodge", 
+           colour = "#FFFFFF",
+           size = 2)
+
+```
+
+
+
+## Setting up our first plot 
+
+Mini tip: get rid of abbreviations
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  ggplot(aes(x = dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge", 
+           colour = "#FFFFFF",
+           size = 2) +
+  theme_minimal()
+```
+
+
+## Setting up our first plot 
+
+Turning Dose into a categorical variable (fear not!) + facetting
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supp, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supp)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) +
+  theme_minimal()
+```
+
+
+## Setting up our first plot 
+
+Turning Dose into a categorical variable (fear not!) + facetting
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  facet_wrap(supplement ~ ., ncol = 1) +
+  theme_minimal()
+```
+
+
+## Setting up our first plot 
+
+Adding some text (finally!)
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  scale_alpha(range = c(0.33, 1)) +
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+```
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Legend + facet strip + colour + title... Wait, which one is which? 
+
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+::: {.fragment}
+
+![](https://media1.giphy.com/media/ouE6OPO1MADM4/giphy.gif)
+
+:::
+
+:::
+
+
+::: {.column width=50%}
+
+```{r}
+#| echo: false
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+
+```
+
+::: 
+
+::::
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+::: {.fragment}
+
+![](https://hips.hearstapps.com/hmg-prod/images/glass-of-orange-juice-with-oranges-1589917191.jpg)
+:::
+
+:::
+
+::: {.column width=50%}
+
+
+:::{.incremental}
+
+- Orange juice is... orange! 
+- Vitamin C is... also orange, but more red and "aggressive"
+- Those green leaves look nice with those colours... 
+
+[imagecolorpicker.com](https://imagecolorpicker.com/)
+
+:::
+
+:::
+
+::::
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Generating a colour palette
+Starting colour: orange juice! "#fab909"
+
+```{r}
+#| echo: true
+#| fig-height: 0.8
+monochromeR::generate_palette("#db5a05", blend_colour = "red", n_colours = 3, view_palette = TRUE)
+monochromeR::generate_palette("#3c6b30", "go_darker", n_colours = 2, view_palette = TRUE)
+monochromeR::generate_palette("#0C1509", "go_lighter", n_colours = 6, view_palette = TRUE)
+```
+
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Creating a named vector, for ease later
+
+```{r}
+#| echo: true
+#| fig-height: 3
+vit_c_palette <- c("Orange Juice" = "#fab909", 
+                   "Vitamin C" = "#E93603",
+                   light_text = "#323A30",
+                   dark_text =  "#0C1509")
+
+monochromeR::view_palette(vit_c_palette)
+
+```
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Back to the plot! 
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+```
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Add in our colours
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  scale_fill_manual(values = vit_c_palette) +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+```
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Use transparency to indicate dose
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(aes(alpha = dose),
+           stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  scale_fill_manual(values = vit_c_palette) +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+```
+
+
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Use transparency to indicate dose - within limits
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(aes(alpha = dose),
+           stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  scale_fill_manual(values = vit_c_palette) +
+  scale_alpha(range = c(0.4, 1)) +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1)
+```
+
+
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+Legend has always been redundant! 
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(aes(alpha = dose),
+           stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  scale_fill_manual(values = vit_c_palette) +
+  scale_alpha(range = c(0.4, 1)) +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1) +
+  theme(legend.position = "none")
+
+```
+
+
+## <span style=color:#28A569>#1</span> - Use colour and orientation purposefully
+
+And I find this so much less confusing!
+
+```{r}
+#| output-location: column-fragment
+#| echo: true
+#| code-line-numbers: "1-2|4|5-13|15-17"
+ToothGrowth %>%
+  mutate(supplement = case_when(supp == "OJ" ~ "Orange Juice",
+                                supp == "VC" ~ "Vitamin C",
+                                TRUE ~ as.character(supp))) %>%
+  group_by(supplement, dose) %>%
+  summarise(mean_length = mean(len)) %>%
+  mutate(categorical_dose = factor(dose)) %>%
+  ggplot(aes(x = categorical_dose,
+             y = mean_length,
+             fill = supplement)) +
+  geom_bar(aes(alpha = dose),
+           stat = "identity",
+           position = "dodge",
+           colour = "#FFFFFF", 
+           size = 2) + 
+  labs(x = "Dose",
+       y = "Mean length (mm)",
+       title = paste0("In smaller doses, Orange Juice was associated with greater mean tooth growth,
+compared to equivalent doses of Vitamin C"),
+subtitle = "With the highest dose, the mean recorded length was almost identical.") +
+  scale_fill_manual(values = vit_c_palette) +
+  scale_alpha(range = c(0.4, 1)) +
+  coord_flip() +
+  theme_minimal() +
+  facet_wrap(supplement ~ ., ncol = 1) +
+  theme(legend.position = "none")
+
+```
+
+

@@ -1,0 +1,223 @@
+---
+sidebar: false
+format:
+  html:
+    theme: carartheme.scss
+    css: [cararstyles.css, removelogo.css]
+email-obfuscation: references
+from: markdown+emoji
+---
+
+
+:::{.blue-banner}
+
+:::{.column-body}
+<center>
+![](assets/stacked-logo-darkRGB.png){width=66%}
+</center>
+<br>
+:::
+
+:::
+
+::: {.grid}
+
+::: {.g-col-6 .g-col-md-8}
+
+<br> 
+
+##  Maximise the Impact of your Expertise
+
+
+Hi! I'm Cara.<br>
+Here's how I can help.
+
+:::
+
+::: {.g-col-6 .g-col-md-4}
+
+<br>
+<center>
+![](images/home/profile-pic-corner.png)
+</center>
+
+<br>
+:::
+
+:::
+
+::::: {.column-page}
+
+:::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+
+### Data visualisation
+
+:::: {.grid}
+::: {.g-col-7 .g-col-md-6}
+Intuitive and memorable graphs that tell a clear story<br>a.k.a. normal graphs, but polished
+
+
+
+:::
+
+::: {.g-col-5 .g-col-md-6}
+![](images/home/pipeline.png){width=90%}
+
+:::
+
+:::
+
+
+:::{.quote}
+
+"The heatmap looks so nice. And I love the line graph!"
+
+:::
+
+::::
+
+
+
+::: {.g-col-7 .g-col-md-4}
+### Data-driven art
+Bold visual celebrations, magazine-style graphs, or personal messages disguised as art
+
+:::{.quote}
+
+"The Bake-Off plot, that was you!"
+
+:::
+
+:::
+
+::: {.g-col-5 .g-col-md-2}
+
+![](images/home/pipeline.png)
+
+:::
+
+::: {.g-col-7 .g-col-md-4}
+
+### Branding packages
+Colour schemes, ggplot themes, and Quarto templates for an effortlessly consistent aesthetic
+
+:::{.quote}
+
+"Excellent layout. I used it yesterday to prepare our next lesson. Thank you for your effort and help."
+
+:::
+
+:::
+
+
+::: {.g-col-5 .g-col-md-2}
+
+![](images/home/pipeline.png)
+
+:::
+
+
+::: {.g-col-7 .g-col-md-4}
+### Mentorship, talks and bespoke training
+From one-off coaching calls to a multi-session course
+
+:::{.quote}
+
+"The folk I was with all agreed it was amazing how much value you'd packed into 8 minutes without it ever feeling rushed!"
+
+:::
+
+:::
+
+::: {.g-col-5 .g-col-md-2}
+
+![](images/home/pipeline.png)
+
+:::
+
+::: {.g-col-7 .g-col-md-4}
+
+### Data-driven story telling
+Compelling stories based on your data
+
+:::{.quote}
+
+"You managed to get everyone excited about this data again!"
+
+:::
+
+:::
+
+::: {.g-col-5 .g-col-md-2}
+
+![](images/home/pipeline.png)
+
+:::
+
+::: {.g-col-7 .g-col-md-4}
+### "Enhanced" reproducible outputs
+
+Let's code our way out of mundane tasks, and do so in style! Straight from your data to on-brand reports.
+
+:::{.quote}
+
+"It saved me several hours of repetitive time. Thank you."
+
+:::
+
+:::
+
+::: {.g-col-5 .g-col-md-2}
+
+![](images/home/pipeline.png)
+
+:::
+
+::::
+:::::
+
+
+Throughout my work, my goal is to create tools that help both experts and end users interact well with the data available to them.
+
+
+TODO: Repurpose text below for individual portfolio pages for work above
+
+### Datavisualisation and Data-Driven Story Telling
+
+A good graph can be a great shortcut to helping people make sense of complex data. I enjoy exploring patterns, drawing out key information, and finding creative ways of making the story behind the data resonate with its audience. My portfolio comprises a range of visualisations including static graphs, animated graphs and interactive graphs in a variety of styles. The one consistent thing is the clarity of the message! [...](dataviz.html)
+
+<center>
+[![Dataviz showing the ages of astronauts by gender and by year](images/home/dataviz.png){width=40%}](dataviz.html)
+</center>
+
+
+### Data Pipelines and Parameterised Reports
+
+Who wants to spend their time copy-pasting things to and from a convoluted spreadsheet in order to get from the data to the final product? I find a huge amount of satisfaction in creating solutions for clients that allow them to go straight from the data to their desired output (polished dataviz, summary of analyses, complex write-ups with conditional text), so that they can spend more time focusing on their domain of expertise. 
+
+<center>
+[![Top line: a squiggle going from A to B; Bottom line: a straight lint from A to B](images/home/pipeline.png){width=80%}](dataviz.html)
+</center>
+
+I have 10 years experience building parameterised reports to analyse data from postgraduate medical examinations, providing detailed reports to examination bodies and individualised feedback reports to candidates and examiners. As you can imagine, most of these are not publicly available, but if you want to find out more about the process, [give me a shout](about.html#great-how-does-that-work)! 
+
+
+### Shiny Apps and R Packages
+
+Helping others make sense of their own data is a particular passion of mine. To do this, I have enjoyed creating Shiny Apps with a lay audience in mind. From text analysis to visualising uncertainty, the aim is to help others make informed decisions based on their own data. [...](shiny-apps.html)
+
+<center>
+[![Video demo of a text analysis Shiny App](images/home/shiny.gif){width=80%}](shiny-apps.html)
+</center>
+
+
+### Generative Art
+
+I also dabble in the fascinating world of Generative Art. I created the [aRtfulBot](https://www.twitter.com/aRtfulBot) primarily as an exercise in automating code outputs with APIs and containers. Setting up a bot that automatically creates a new piece of generative art each day seemed like the most fun way to explore all that! [...](generative-art.html)
+
+<center>
+[![Black squiggles made up of three equations on a white background ](images/home/artfulbot.png){width=80%}](generative-art.html)
+</center>
+
