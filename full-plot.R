@@ -65,20 +65,17 @@ ToothGrowth %>%
   theme_minimal() +
   facet_wrap(supplement ~ ., ncol = 1) +
   ggtext::geom_textbox(aes(
-    x = categorical_dose,
-    y = mean_length,
     label = paste0("<span style=font-size:9pt>", dose, "mg/day</span><br>", mean_length, "mm"),
     hjust = case_when(mean_length < 15 ~ 0,
                       TRUE ~ 1),
     halign = case_when(mean_length < 15 ~ 0,
                        TRUE ~ 1),
     colour = case_when(mean_length > 15 ~ "#FFFFFF",
-                       TRUE ~ vit_c_palette[supplement])
-  ),
-  fill = NA,
-  fontface = "bold",
-  box.colour = NA,
-  family = "Segoe UI") +
+                       TRUE ~ vit_c_palette[supplement])),
+    fill = NA,
+    fontface = "bold",
+    box.colour = NA,
+    family = "Cabin") +
   scale_colour_identity() +
   scale_fill_manual(values = vit_c_palette) +
   labs(y = "Mean length of odontobast cells (mm)",
@@ -92,10 +89,11 @@ ToothGrowth %>%
   scale_y_continuous(expand = c(0, 0.5)) +
   theme(legend.position = "none",
         axis.title.y = element_blank(),
-        axis.title.x = element_text(hjust = 0.5),
-        text = element_text(family = "Segoe UI", colour = vit_c_palette["light_text"]),
+        axis.title.x = element_text(face = "bold"),
+        text = element_text(family = "Cabin", colour = vit_c_palette["light_text"]),
         plot.title = ggtext::element_textbox_simple(family = "Enriqueta", size = 16, lineheight = 1.3,
                                                     margin = margin(0.5, 0, 1, 0, "lines"),
+                                                    face = "bold",
                                                     halign = 0, colour = vit_c_palette["dark_text"]),
         plot.subtitle = ggtext::element_textbox_simple(family = "Cabin", size = 12, lineheight = 1.3,
                                                        margin = margin(0, 0, 1, 0, "lines"),
@@ -113,25 +111,6 @@ basic_scatter_plot <- ToothGrowth %>%
   mutate(guinea_pig_name = sample(unique(bakeoff::bakers$baker), 60),
          supplement = case_when(supp == "OJ" ~ "Orange Juice",
                                 supp == "VC" ~ "Vitamin C",
-                                TRUE ~ as.character(supp))) %>%
-  ggplot(aes(x = dose, y = len, fill = supp,
-             colour = supp)) +
-  geom_point(shape = 21,
-             colour = "#FFFFFF",
-             size = 5,
-             alpha = 0.8) +
-  labs(title = "Increased dose was associated with greater tooth growth across both Orange Juice and Vitamin C,
-with diminishing returns for Vitamin C.",
-subtitle = "Vitamin C was also associated with greater variability at the highest dose.")
-
-
-
-set.seed(2302)
-
-ToothGrowth %>%
-  mutate(guinea_pig_name = sample(unique(bakeoff::bakers$baker), 60),
-         supplement = case_when(supp == "OJ" ~ "Orange Juice",
-                                supp == "VC" ~ "Vitamin C",
                                 TRUE ~ as.character(supp))) %T>%
   {
     {
@@ -142,13 +121,8 @@ ToothGrowth %>%
                                       TRUE ~ "min"))
     }
   } %>%
-  # T pipe to find min, max, create labels and coords, to feed back into last textbox call
   ggplot(aes(x = dose, y = len, fill = supplement,
              colour = supplement)) +
-  geomtextpath::geom_textline(stat = "smooth", aes(label = supplement),
-                              hjust = 0.1,
-                              vjust = 0.3,
-                              family = "Cabin") +
   geom_point(shape = 21,
              colour = "#FFFFFF",
              size = 5,
@@ -157,12 +131,40 @@ ToothGrowth %>%
        y = "Length (mm)",
        title = "Increased dose was associated with greater tooth growth across both Orange Juice and Vitamin C,
 with diminishing returns for Vitamin C.",
-subtitle = "Vitamin C was also associated with greater variability at the highest dose.") +
+subtitle = "Vitamin C was also associated with greater variability at the highest dose.")
+
+themed_scatter_plot <- basic_scatter_plot +
   scale_x_continuous(breaks = c(0.5, 1.0, 2.0), labels = function(x) paste0(x, " mg/day")) +
   scale_fill_manual(values = vit_c_palette) +
+  scale_fill_manual(values = vit_c_palette) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        text = element_text(family = "Cabin", colour = vit_c_palette["light_text"]),
+        plot.title = ggtext::element_textbox_simple(family = "Enriqueta", size = 16, face = "bold",
+                                                    lineheight = 1.3,
+                                                    margin = margin(0.5, 0, 1, 0, "lines"),
+                                                    halign = 0, colour = vit_c_palette["dark_text"]),
+        plot.subtitle = ggtext::element_textbox_simple(family = "Cabin", size = 12, lineheight = 1.3,
+                                                       margin = margin(0, 0, 1, 0, "lines"),
+                                                       halign = 0.9),
+        axis.text = element_text(family = "Cabin", colour = vit_c_palette["light_text"]),
+        axis.title = element_text(face = "bold"),
+        strip.text = element_text(family = "Enriqueta", face = "bold",
+                                  hjust = 0.03,
+                                  size = 12, margin = margin(2, 0, 0, 0, "lines"),
+                                  colour = vit_c_palette["light_text"]),
+        panel.grid = element_line(colour = "#F0F0F0")
+  )
+
+
+themed_scatter_plot +
+  geomtextpath::geom_textline(stat = "smooth", aes(label = supplement),
+                              hjust = 0.1,
+                              vjust = 0.3,
+                              fontface = "bold",
+                              family = "Cabin") +
   scale_colour_manual(values = vit_c_palette) +
   # gghighlight::gghighlight(supp == "OJ") +
-  theme_minimal() +
   ggtext::geom_textbox(data = filter(min_max_gps,
                                      dose == 2),
                        aes(x = case_when(dose < 1.5 ~ dose + 0.05,
@@ -191,25 +193,7 @@ subtitle = "Vitamin C was also associated with greater variability at the highes
                                   TRUE ~ len - 0.5)),
              curvature = 0,
              arrow = arrow(length = unit(0.1, "cm")),
-             alpha = 0.5) +
-  theme(legend.position = "none",
-        text = element_text(family = "Segoe UI", colour = vit_c_palette["light_text"]),
-        plot.title = ggtext::element_textbox_simple(family = "Enriqueta", size = 16, face = "bold",
-                                                    lineheight = 1.3,
-                                                    margin = margin(0.5, 0, 1, 0, "lines"),
-                                                    halign = 0, colour = vit_c_palette["dark_text"]),
-        plot.subtitle = ggtext::element_textbox_simple(family = "Cabin", size = 12, lineheight = 1.3,
-                                                       margin = margin(0, 0, 1, 0, "lines"),
-                                                       halign = 0.9),
-        axis.text = element_text(family = "Segoe UI", colour = vit_c_palette["light_text"]),
-        axis.title = element_text(face = "bold"),
-        strip.text = element_text(family = "Enriqueta", face = "bold",
-                                  hjust = 0.03,
-                                  size = 12, margin = margin(2, 0, 0, 0, "lines"),
-                                  colour = vit_c_palette["light_text"]),
-        panel.grid = element_line(colour = "#F0F0F0")
-  )
-
+             alpha = 0.5)
 
 # Turn into function to show it works reproducibly
 

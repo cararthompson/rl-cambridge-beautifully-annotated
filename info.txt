@@ -6,12 +6,14 @@ Beautifully annotated: enhancing your ggplots with text
 
 # Abstract ----
 Applying design principles to the text in our graphs, and making text an integral part of the visualisation, can make all the difference between a busy plot and a plot which communicates a clear story.
+
 In this session, we will explore:
 - how to be less dependent on annotations (I know... trust me!)
 - how to use colors and fonts to draw attention to key elements in annotations
 - how to format text on the fly to change fonts, colors, alignments and text sizes using `{ggtext}`
 - how to add arrows to your plots to highlight key data points or important patterns
 - a few useful packages and ggplot tricks when it comes to annotations
+
 Attendees are welcome to bring along one of their own plots to discuss during the Q&A session for some live feedback. 
 
 
