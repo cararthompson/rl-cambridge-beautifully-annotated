@@ -3,6 +3,7 @@
   position: fixed;
   bottom: 0;
   right: 12px;
+  margin-bottom: 6px;
   max-height: 2.2rem;
   height: 100%;
   width: auto;
