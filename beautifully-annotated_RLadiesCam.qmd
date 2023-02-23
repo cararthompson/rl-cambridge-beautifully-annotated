@@ -12,7 +12,7 @@ format:
     logo: images/light-logo.png
     theme: cararquarto.scss
     footer: |
-        Slides and recording: [cararthompson.com/talks/beautifully-annotated](https://cararthompson.com/talks/beautifully-annotated)
+        Slides and recording: [cararthompson.com/talks/rl-cambridge-beautifully-annotated/](https://www.cararthompson.com/talks/rl-cambridge-beautifully-annotated/)
 filters:
  - code-visibility
  - lightbox
