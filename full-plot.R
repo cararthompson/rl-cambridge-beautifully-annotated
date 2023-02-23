@@ -62,7 +62,7 @@ ToothGrowth %>%
            size = 2) + #
   scale_alpha(range = c(0.33, 1)) + #
   coord_flip() + #
-  theme_minimal() +
+  theme_minimal(base_size = 14) +
   facet_wrap(supplement ~ ., ncol = 1) +
   ggtext::geom_textbox(aes(
     label = paste0("<span style=font-size:9pt>", dose, "mg/day</span><br>", mean_length, "mm"),
@@ -91,16 +91,16 @@ ToothGrowth %>%
         axis.title.y = element_blank(),
         axis.title.x = element_text(face = "bold"),
         text = element_text(family = "Cabin", colour = vit_c_palette["light_text"]),
-        plot.title = ggtext::element_textbox_simple(family = "Enriqueta", size = 16, lineheight = 1.3,
+        plot.title = ggtext::element_textbox_simple(family = "Enriqueta", size = rel(1.5), lineheight = 1.3,
                                                     margin = margin(0.5, 0, 1, 0, "lines"),
                                                     face = "bold",
                                                     halign = 0, colour = vit_c_palette["dark_text"]),
-        plot.subtitle = ggtext::element_textbox_simple(family = "Cabin", size = 12, lineheight = 1.3,
+        plot.subtitle = ggtext::element_textbox_simple(family = "Cabin", size = rel(1.1), lineheight = 1.3,
                                                        margin = margin(0, 0, 1, 0, "lines"),
                                                        halign = 0),
         strip.text = element_text(family = "Enriqueta", face = "bold",
                                   hjust = 0.03,
-                                  size = 12, margin = margin(2, 0, 0, 0, "lines"),
+                                  size = rel(1.1), margin = margin(2, 0, 0.5, 0, "lines"),
                                   colour = vit_c_palette["light_text"]),
         panel.grid = element_blank())
 
@@ -194,21 +194,3 @@ themed_scatter_plot +
              curvature = 0,
              arrow = arrow(length = unit(0.1, "cm")),
              alpha = 0.5)
-
-# Turn into function to show it works reproducibly
-
-# Highlight greater variability in 2.0 dose
-# Add trends
-
-
-# Add unique annotations
-
-
-
-# Then demo live updating of labels as we change data to demo why it's worth the effort
-
-
-
-
-?ToothGrowth
-# dose is mg/day
