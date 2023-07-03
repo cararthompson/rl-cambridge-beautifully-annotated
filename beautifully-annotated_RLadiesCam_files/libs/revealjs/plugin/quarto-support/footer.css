@@ -17,7 +17,7 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  font-size: 18px;
+  font-size: 1.2em;
 }
 
 .reveal .footer > * {
@@ -75,7 +75,7 @@
     right: 10px;
   }
   .reveal .footer {
-    font-size: 14px;
+    font-size: 1.2em;
     bottom: 0px;
   }
   .reveal .slide-number {
